@@ -18,40 +18,16 @@ const timerEls = {
 const inputOptions = {
   enableTime: true,
   time_24hr: true,
-  //   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
     targetDate = selectedDates[0];
 
     const isDateValid = Date.now() < targetDate.getTime();
     if (!isDateValid) {
-      iziToast.show({
-        title: 'Error',
-        titleColor: '#FFF',
-        titleSize: '16px',
-        message: 'Please choose a date in the future',
-        messageColor: '#FFF',
-        messageSize: '16px',
-        position: 'topCenter',
-        backgroundColor: '#EF4040',
-        iconUrl: './octagon.svg',
-        timeout: 500000,
-        close: false,
-        buttons: [
-          [
-            `<button type="button" id="izi-close-button">
-                 <img src="./x.svg" alt="" width="16px" height="16px" />
-              </button>`,
-            function (instance, toast) {
-              instance.hide({}, toast, 'buttonName');
-            },
-          ],
-        ],
-      });
+      showErrorMessage();
     }
 
     setAccessElement(buttonEl, isDateValid);
-    // console.log(selectedDates[0]);
   },
 };
 
@@ -63,23 +39,15 @@ inputEl.addEventListener('focus', () => {
 });
 
 buttonEl.addEventListener('click', () => {
-  let timeLeft = 0;
-  let timeObject = {};
+  if (!targetDate || Date.now() >= targetDate.getTime()) return;
+
   const intervalId = setInterval(() => {
-    timeLeft = targetDate.getTime() - Date.now();
-
-    if (timeLeft > 0) {
-      timeObject = convertMs(timeLeft);
-
-      for (const [key, elem] of Object.entries(timerEls)) {
-        elem.textContent =
-          key === 'days' && timeObject[key] > 99
-            ? timeObject[key]
-            : (elem.textContent = String(timeObject[key]).padStart(2, '0'));
-      }
-    } else {
+    const timeLeft = targetDate.getTime() - Date.now();
+    if (timeLeft <= 0) {
       clearInterval(intervalId);
       setAccessElement(inputEl, true);
+    } else {
+      updateTimerDisplay(timeLeft);
     }
   }, 1000);
 
@@ -87,8 +55,45 @@ buttonEl.addEventListener('click', () => {
   setAccessElement(inputEl);
 });
 
+function showErrorMessage() {
+  iziToast.show({
+    title: 'Error',
+    titleColor: '#FFF',
+    titleSize: '16px',
+    message: 'Please choose a date in the future',
+    messageColor: '#FFF',
+    messageSize: '16px',
+    position: 'topCenter',
+    backgroundColor: '#EF4040',
+    iconUrl: './octagon.svg',
+    timeout: 500000,
+    close: false,
+    buttons: [
+      [
+        `<button type="button" id="izi-close-button">
+           <img src="./x.svg" alt="" width="16px" height="16px" />
+        </button>`,
+        function (instance, toast) {
+          instance.hide({}, toast, 'buttonName');
+        },
+      ],
+    ],
+  });
+}
+
+function updateTimerDisplay(timeLeft) {
+  const timeObject = convertMs(timeLeft);
+
+  for (const [key, elem] of Object.entries(timerEls)) {
+    elem.textContent =
+      key === 'days' && timeObject[key] > 99
+        ? timeObject[key]
+        : String(timeObject[key]).padStart(2, '0');
+  }
+}
+
 function setAccessElement(domElement, enable = false) {
-  let isDisabled = domElement.classList.contains('disabled-element');
+  const isDisabled = domElement.classList.contains('disabled-element');
   if (isDisabled === enable) {
     domElement.classList.toggle('disabled-element');
   }
@@ -96,19 +101,14 @@ function setAccessElement(domElement, enable = false) {
 }
 
 function convertMs(ms) {
-  // Number of milliseconds per unit of time
   const second = 1000;
   const minute = second * 60;
   const hour = minute * 60;
   const day = hour * 24;
 
-  // Remaining days
   const days = Math.floor(ms / day);
-  // Remaining hours
   const hours = Math.floor((ms % day) / hour);
-  // Remaining minutes
   const minutes = Math.floor(((ms % day) % hour) / minute);
-  // Remaining seconds
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
