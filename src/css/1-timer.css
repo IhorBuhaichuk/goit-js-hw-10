@@ -1,11 +1,10 @@
-section {
-  padding-left: 156px;
+:root {
+  --line-height: 1.5;
 }
 
-h1 {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
+section { padding-left: 156px; }
+
+h1 { margin: 30px 0; }
 
 #datetime-picker {
   width: 272px;
@@ -16,25 +15,18 @@ h1 {
   border-radius: 4px;
   border: 1px solid #808080;
   background: #fff;
-
   color: #2e2f42;
   outline: transparent;
-
   font-family: inherit;
   font-size: 16px;
-  line-height: 1.5; /*24px;  150% */
-  letter-spacing: 0.04em; /*0.64px*/
-
+  line-height: var(--line-height);
+  letter-spacing: 1px;
   transition: border-color 300ms ease-in-out;
 }
 
-#datetime-picker:hover {
-  border-color: #000;
-}
+#datetime-picker:hover { border-color: #000; }
 
-#datetime-picker:focus {
-  border-color: #4e75ff;
-}
+#datetime-picker:focus { border-color: #4e75ff; }
 
 [data-start] {
   width: 75px;
@@ -47,49 +39,25 @@ h1 {
   border-radius: 8px;
   background-color: #4e75ff;
   color: #fff;
-
   font-family: inherit;
   font-size: 16px;
   font-weight: 500;
-  line-height: 1.5; /*24px;  150% */
-  letter-spacing: 0.04em; /*0.64px*/
-
+  line-height: var(--line-height);
+  letter-spacing: 1px;
   transition: background-color 250ms ease-in-out, color 300ms ease-in-out;
 }
 
-[data-start]:hover,
-[data-start]:focus {
+[data-start]:hover, [data-start]:focus {
   background-color: #6c8cff;
   color: #fff;
 }
 
-.timer {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-}
-.field {
-  /* width: 76px; */
-  height: 72px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #2e2f42;
-}
+.timer { display: flex; gap: 24px; }
 
-.value {
-  font-size: 40px;
-  line-height: 1.2; /*48px;  120% */
-  letter-spacing: 0.04em; /* 1.6px; */
-}
+.field { height: 72px; display: flex; flex-direction: column; align-items: center; color: #2e2f42; }
 
-.label {
-  text-transform: uppercase;
-  line-height: 1.5; /*24px;  150% */
-}
+.value { font-size: 40px; line-height: 1.2em; letter-spacing: 1px; }
 
-.disabled-element {
-  background-color: #cfcfcf;
-  color: #989898;
-  pointer-events: none;
-}
+.label { text-transform: uppercase; line-height: var(--line-height); }
+
+.disabled-element { background-color: #cfcfcf; color: #989898; pointer-events: none; }
