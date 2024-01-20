@@ -4,31 +4,27 @@ import '../css/2-snackbar.css';
 
 const formEl = document.querySelector('.form');
 
-formEl.addEventListener('submit', event => {
+formEl.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const formData = new FormData(formEl);
+  try {
+    const formData = new FormData(formEl);
+    const promiseOptions = Object.fromEntries(formData);
 
-  const promiseOptions = {};
-  formData.forEach((value, key) => {
-    promiseOptions[key] = value;
-  });
-
-  createPromise(promiseOptions)
-    .then(value => createMessage(value))
-    .catch(error => createMessage(error, true));
-
-  formEl.reset();
+    const result = await createPromise(promiseOptions);
+    createMessage(result);
+  } catch (error) {
+    createMessage(error, true);
+  } finally {
+    formEl.reset();
+  }
 });
 
 function createPromise({ delay, state }) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (state === 'fulfilled') {
-        resolve(`✅ Fulfilled promise in ${delay}ms`);
-      } else {
-        reject(`❌ Rejected promise in ${delay}ms`);
-      }
+      const message = state === 'fulfilled' ? `✅ Fulfilled promise in ${delay}ms` : `❌ Rejected promise in ${delay}ms`;
+      state === 'fulfilled' ? resolve(message) : reject(message);
     }, delay);
   });
 }
