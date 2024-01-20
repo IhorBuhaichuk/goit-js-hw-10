@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 /* Reset styles */
 h1,
 h2,
@@ -21,7 +25,7 @@ ul {
 
 a {
   color: currentColor;
-  text-decoration: none;
+  /* text-decoration: none; */
 }
 
 button {
